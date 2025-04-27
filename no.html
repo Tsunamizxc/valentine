@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="favicon.ico" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Го гул?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {        
+            display: flex;
+            justify-content: center;
+         align-items: center;
+            height: 100vh;
+         margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        touch-action: manipulation;
+        overflow-x: hidden;
+    }
+
+    .hello {
+        padding: 20px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hello__header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .hello__header_img {
+        margin-bottom: 20px;
+    }
+
+    .hello__img_item {
+        max-width: 200px;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .hello__header_title h1 {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .hello__row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hello__row_btns {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        position: relative;
+        width: 100%;
+    }
+
+    .hello__btns_btn {
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 120px;
+    }
+
+    .yes {
+        background-color: #4CAF50;
+        color: white;
+        border: 2px solid #45a049;
+    }
+
+    .no {
+        background-color: #f44336;
+        color: white;
+        border: 2px solid #d32f2f;
+        position: relative;
+        transition: transform 0.2s ease;
+    }
+
+    .yes:hover,
+    .yes:active {
+        background-color: #45a049;
+    }
+
+    .no:hover,
+    .no:active {
+        background-color: #d32f2f;
+    }
+
+    .run-message {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #ffeb3b;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 600px) {
+        .hello__header_title h1 {
+            font-size: 20px;
+        }
+
+        .hello__btns_btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            min-width: 100px;
+        }
+
+        .hello__img_item {
+            max-width: 150px;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <div class="hello">
+        <div class="container">
+            <div class="hello__header">
+                <div class="hello__header_img">
+                    <img src="kermit-shooting.gif" alt="" class="hello__img_item">
+                </div>
+                <div class="hello__header_title">
+                    <h1>Кнопка "нет" сегодня не работает))😈</h1>
+                </div>
+            </div>
+            <div class="hello__row">
+                <div class="hello__row_btns">
+                    <div class="run-message" id="runMessage">Временные неполадки, кнопка не работает!😏</div>
+                    <a href="no.html" class="hello__btns_btn no" id="runawayBtn">Нет</a>
+                    <a href="yes.html" class="hello__btns_btn yes">Да</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const runawayBtn = document.getElementById('runawayBtn');
+        const runMessage = document.getElementById('runMessage');
+        const buttonsContainer = document.querySelector('.hello__row_btns');
+        let counter = 0;
+        let isRunning = false;
+
+        // Начальная позиция кнопки
+        let posX = 0;
+        let posY = 0;
+
+        // Размеры контейнера и кнопки
+        let containerRect;
+        let btnRect;
+
+        function updateSizes() {
+            containerRect = buttonsContainer.getBoundingClientRect();
+            btnRect = runawayBtn.getBoundingClientRect();
+        }
+
+        // Инициализация
+        updateSizes();
+        window.addEventListener('resize', updateSizes);
+
+        // Функция для перемещения кнопки
+        function moveButton(clientX, clientY) {
+            if (isRunning) return;
+
+            isRunning = true;
+            counter++;
+
+            // Показываем сообщение
+            runMessage.style.opacity = 1;
+            setTimeout(() => {
+                runMessage.style.opacity = 0;
+            }, 1000);
+
+            // Вычисляем направление для убегания
+            const containerCenterX = containerRect.left + containerRect.width / 2;
+            const containerCenterY = containerRect.top + containerRect.height / 2;
+
+            // Текущее положение кнопки
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+
+            // Вектор от курсора/касания к кнопке
+            const dx = btnCenterX - clientX;
+            const dy = btnCenterY - clientY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Нормализуем вектор
+            const nx = dx / distance;
+            const ny = dy / distance;
+
+            // Длина прыжка (зависит от скорости движения)
+            const jumpLength = 500 + Math.random() * 50;
+
+            // Новая позиция
+            let newX = btnCenterX + nx * jumpLength;
+            let newY = btnCenterY + ny * jumpLength;
+
+            // Проверяем границы контейнера
+            const margin = 10;
+            newX = Math.max(containerRect.left + btnRect.width / 2 + margin,
+                Math.min(containerRect.right - btnRect.width / 2 - margin, newX));
+            newY = Math.max(containerRect.top + btnRect.height / 2 + margin,
+                Math.min(containerRect.bottom - btnRect.height / 2 - margin, newY));
+
+            // Переводим в относительные координаты для transform
+            const relativeX = newX - containerRect.left - containerRect.width / 2;
+            const relativeY = newY - containerRect.top - containerRect.height / 2;
+
+            // Применяем перемещение
+            runawayBtn.style.transform = `translate(${relativeX}px, ${relativeY}px)`;
+
+            // Обновляем данные о позиции
+            setTimeout(() => {
+                updateSizes();
+                isRunning = false;
+            }, 10);
+        }
+
+        // Обработчики для мыши
+        runawayBtn.addEventListener('mouseover', (e) => {
+            moveButton(e.clientX, e.clientY);
+        });
+
+        // Обработчики для сенсорных экранов
+        runawayBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            moveButton(touch.clientX, touch.clientY);
+        }, { passive: false });
+
+        // Предотвращаем переход по ссылке
+        runawayBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            return false;
+        });
+    </script>
+</body>
+
+</html>
